@@ -3,6 +3,9 @@ package io.oei.speechtest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
+import android.speech.RecognitionListener;
+import android.speech.SpeechRecognizer;
+import android.util.Log;
 
 import android.view.MenuItem;
 
@@ -17,6 +20,7 @@ import android.view.MenuItem;
  * more than a {@link HashDetailFragment}.
  */
 public class HashDetailActivity extends Activity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,7 @@ public class HashDetailActivity extends Activity {
                     .add(R.id.hash_detail_container, fragment)
                     .commit();
         }
+
     }
 
     @Override

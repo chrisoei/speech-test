@@ -3,8 +3,13 @@ package io.oei.speechtest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
-
-
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.util.Log;
+import android.speech.SpeechRecognizer;
+import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
+import java.util.ArrayList;
 
 
 /**
@@ -31,6 +36,9 @@ public class HashListActivity extends Activity
      * device.
      */
     private boolean mTwoPane;
+    public static SpeechRecognizer speechRecognizer;
+    public static TextToSpeech textToSpeech;
+    public static long speechId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +59,114 @@ public class HashListActivity extends Activity
                     .setActivateOnItemClick(true);
         }
 
+        Log.d("speech_test", "Initiating TextToSpeech");
+        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status != TextToSpeech.SUCCESS) {
+                    Log.e("speech_test", "Text to speech init failure");
+                    throw new RuntimeException();
+                }
+                Log.d("speech_test", "Text to speech inititialized");
+            }
+        });
+        Log.d("speech_test", "isRecognitionAvailable: " + SpeechRecognizer.isRecognitionAvailable(getApplicationContext()));
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(getApplicationContext());
+        speechRecognizer.setRecognitionListener(new RecognitionListener() {
+            @Override
+            public void onReadyForSpeech(Bundle params) {
+                Log.d("speech_test", "Ready for Speech");
+            }
+
+            @Override
+            public void onBeginningOfSpeech() {
+                Log.d("speech_test", "Beginning of Speech");
+            }
+
+            @Override
+            public void onRmsChanged(float rmsdB) {
+//                Log.d("speech_test", "RMS: " + rmsdB);
+            }
+
+            @Override
+            public void onBufferReceived(byte[] buffer) {
+                Log.d("speech_test", "Buffer received");
+            }
+
+            @Override
+            public void onEndOfSpeech() {
+                Log.d("speech_test", "End of Speech");
+            }
+
+            @Override
+            public void onError(int error) {
+                Log.d("speech_test", "Error: " + error);
+                switch(error) {
+                    case SpeechRecognizer.ERROR_AUDIO:
+                        Log.e("speech_test", "Audio recording error");
+                        break;
+                    case SpeechRecognizer.ERROR_CLIENT:
+                        Log.e("speech_test", "Other client side errors");
+                        break;
+                    case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
+                        Log.e("speech_test", "Insufficient permissions");
+                        break;
+                    case SpeechRecognizer.ERROR_NETWORK:
+                        Log.e("speech_test", "Other network related errors");
+                        break;
+                    case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
+                        Log.e("speech_test", "Network operation timed out");
+                        break;
+                    case SpeechRecognizer.ERROR_NO_MATCH:
+                        Log.e("speech_test", "No recognition result matched");
+                        break;
+                    case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
+                        Log.e("speech_test", "RecognitionService busy");
+                        break;
+                    case SpeechRecognizer.ERROR_SERVER:
+                        Log.e("speech_test", "Server sends error status");
+                        break;
+                    case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
+                        Log.e("speech_test", "No speech input");
+                        break;
+                }
+            }
+
+            @Override
+            public void onResults(Bundle results) {
+                ArrayList<String> x = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                Log.d("speech_test", "Result strings: " + x);
+                Log.d("speech_test", "Result confidence: " +
+                    results.getFloatArray(SpeechRecognizer.CONFIDENCE_SCORES)[0]);
+//                CharSequence cs = results.getStringArray(SpeechRecognizer.RESULTS_RECOGNITION)[0];
+//                textToSpeech.speak(cs, TextToSpeech.QUEUE_ADD, new Bundle(), "speech-test-" + speechId++);
+                Log.d("speech_test", "Max string length "+ textToSpeech.getMaxSpeechInputLength());
+                for (String s : x) {
+                    Log.d("speech_test", "About to speak string");
+                    int rc = textToSpeech.speak(s,
+                            TextToSpeech.QUEUE_ADD,
+                            null
+                    );
+                    Log.d("speech_test", "Text to speech return code: " + rc);
+                }
+            }
+
+            @Override
+            public void onPartialResults(Bundle partialResults) {
+                Log.d("speech_test", "Partial results");
+            }
+
+            @Override
+            public void onEvent(int eventType, Bundle params) {
+                Log.d("speech_test", "Event: " + eventType);
+            }
+        });
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,"io.oei.SpeechTest");
+
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,5);
+        speechRecognizer.startListening(intent);
         // TODO: If exposing deep links into your app, handle intents here.
     }
 
