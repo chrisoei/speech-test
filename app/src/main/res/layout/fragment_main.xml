@@ -19,6 +19,7 @@
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
         android:background="#0f0"
+        android:textSize="40dp"
     />
 
     <Button
@@ -30,6 +31,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="#f00"
+        android:textSize="40dp"
     />
 
 </LinearLayout>
