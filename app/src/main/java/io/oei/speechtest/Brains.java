@@ -147,7 +147,11 @@ public class Brains {
         return intent;
     }
 
-    protected static void go() {
+    public static void start() {
         speechRecognizer.startListening(speechRecognizerIntent());
+    }
+
+    public static void stop() {
+        speechRecognizer.stopListening();
     }
 }

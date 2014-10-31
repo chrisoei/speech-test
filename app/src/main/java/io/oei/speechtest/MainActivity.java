@@ -65,12 +65,16 @@ public class MainActivity extends Activity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            Log.d(log_tag, "findViewById " + rootView.findViewById(R.id.button));
 
-            ((Button) rootView.findViewById(R.id.button)).setOnClickListener(new View.OnClickListener() {
+            ((Button) rootView.findViewById(R.id.start_button)).setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    Brains.go();
+                    Brains.start();
                }
+            });
+            ((Button) rootView.findViewById(R.id.stop_button)).setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Brains.stop();
+                }
             });
             return rootView;
         }
