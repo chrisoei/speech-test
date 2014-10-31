@@ -141,14 +141,12 @@ public class HashListActivity extends Activity
 //                CharSequence cs = results.getStringArray(SpeechRecognizer.RESULTS_RECOGNITION)[0];
 //                textToSpeech.speak(cs, TextToSpeech.QUEUE_ADD, new Bundle(), "speech-test-" + speechId++);
                 Log.d("speech_test", "Max string length "+ textToSpeech.getMaxSpeechInputLength());
-                for (String s : x) {
-                    Log.d("speech_test", "About to speak string");
-                    int rc = textToSpeech.speak(s,
-                            TextToSpeech.QUEUE_ADD,
-                            null
-                    );
-                    Log.d("speech_test", "Text to speech return code: " + rc);
-                }
+                Log.d("speech_test", "About to speak string");
+                int rc = textToSpeech.speak(x.get(0),
+                    TextToSpeech.QUEUE_ADD,
+                    null
+                );
+                Log.d("speech_test", "Text to speech return code: " + rc);
             }
 
             @Override
@@ -164,6 +162,8 @@ public class HashListActivity extends Activity
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,"io.oei.SpeechTest");
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "en-US");
+        intent.putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, true);
 
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,5);
         speechRecognizer.startListening(intent);
