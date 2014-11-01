@@ -5,6 +5,12 @@ import android.content.Context;
 import android.content.pm.FeatureGroupInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
+import android.os.Bundle;
 import android.util.Log;
 
 /**
@@ -14,9 +20,39 @@ public class Hardware {
 
     public static Camera camera = null;
     public static final String log_tag = "hardware";
+    public static LocationManager locationManager = null;
 
     public static boolean hasSystemFeature(String f) {
         return MyApplication.applicationContext.getPackageManager().hasSystemFeature(f);
+    }
+
+    public static void getLocation() {
+        if (locationManager == null) {
+            locationManager = (LocationManager) MyApplication.applicationContext.getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestSingleUpdate(new Criteria(), new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    Log.i(log_tag, location.toString());
+                    Brains.say("Your latitude is " + location.getLatitude() + " and your longitude is " + location.getLongitude());
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+            }, null);
+        }
+
     }
 
     public static void toggleFlashlight() {

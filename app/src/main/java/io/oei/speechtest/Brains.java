@@ -110,7 +110,13 @@ public class Brains {
                 return;
             }
 
+            if (l.contains("location") || l.contains("latitude") || l.contains("longitude")) {
+                Hardware.getLocation();
+                return;
+            }
+
         }
+        Brains.say("I do not understand.");
     }
 
 
@@ -134,6 +140,7 @@ public class Brains {
                 break;
             case SpeechRecognizer.ERROR_NO_MATCH:
                 Log.e(log_tag, "No recognition result matched");
+                Brains.say("I could not hear what you said");
                 break;
             case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
                 Log.e(log_tag, "RecognitionService busy");
@@ -143,6 +150,7 @@ public class Brains {
                 break;
             case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
                 Log.e(log_tag, "No speech input");
+                Brains.say("I didn't hear anything");
                 break;
         }
     }
