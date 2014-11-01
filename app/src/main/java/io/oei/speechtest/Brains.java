@@ -92,8 +92,8 @@ public class Brains {
 
     protected static void handleRecognitionResults(Bundle results) {
         ArrayList<String> x = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-        Log.d(log_tag, "Result strings: " + x);
-        Log.d(log_tag, "Result confidence: " +
+        Log.i(log_tag, "Result strings: " + x);
+        Log.i(log_tag, "Result confidence: " +
                 results.getFloatArray(SpeechRecognizer.CONFIDENCE_SCORES)[0]);
         Log.d(log_tag, "About to speak string");
         int rc = textToSpeech.speak(x.get(0),
