@@ -10,12 +10,13 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by c on 10/31/14.
  */
 public class Brains {
-    protected static final String log_tag = "speech_test";
+    protected static final String log_tag = "brains";
 
     public static SpeechRecognizer speechRecognizer;
     public static TextToSpeech textToSpeech;
@@ -90,17 +91,26 @@ public class Brains {
         });
     }
 
+    protected static void say(String s) {
+        int rc = textToSpeech.speak(s, TextToSpeech.QUEUE_ADD, null);
+        Log.d(log_tag, "Text to speech return code: " + rc);
+    }
+
     protected static void handleRecognitionResults(Bundle results) {
         ArrayList<String> x = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         Log.i(log_tag, "Result strings: " + x);
         Log.i(log_tag, "Result confidence: " +
                 results.getFloatArray(SpeechRecognizer.CONFIDENCE_SCORES)[0]);
-        Log.d(log_tag, "About to speak string");
-        int rc = textToSpeech.speak(x.get(0),
-                TextToSpeech.QUEUE_ADD,
-                null
-        );
-        Log.d(log_tag, "Text to speech return code: " + rc);
+
+        for (String s : x) {
+            String l = s.toLowerCase();
+
+            if (l.contains("flash") || l.contains("light")) {
+                Hardware.toggleFlashlight();
+                return;
+            }
+
+        }
     }
 
 
