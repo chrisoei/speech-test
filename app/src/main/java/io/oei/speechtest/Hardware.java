@@ -31,6 +31,10 @@ public class Hardware {
             if (camera == null) {
                 camera = Camera.open();
                 Camera.Parameters p = camera.getParameters();
+                if (!p.getSupportedFlashModes().contains(Camera.Parameters.FLASH_MODE_TORCH)) {
+                    Brains.say("This device cannot keep the flash on.");
+                    return;
+                }
                 p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
                 camera.setParameters(p);
                 camera.startPreview();
